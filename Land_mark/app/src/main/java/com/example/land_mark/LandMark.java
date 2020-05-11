@@ -10,9 +10,7 @@ public class LandMark {
     String name;
     String url;
 
-    public void LandMark(){
-    }
-    public void add_data(String name, String url){
+    public LandMark(String name, String url){
 //        this.id = count.incrementAndGet(); // auto increase and get
         this.name = name;
         this.url = url;
