@@ -70,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
                 EditText input;
                 input = findViewById(R.id.input);
                 TextView output = findViewById(R.id.output);
-                System.out.println(input.getText());
-                System.out.println(input.toString());
                 double res = 0;
                 res = Double.parseDouble(String.valueOf(input.getText())) * (cur2.getPrice()/cur1.getPrice());
                 output.setText(String.valueOf(Math.round(res*100)*1.0/100)+" "+cur2.getCode());
