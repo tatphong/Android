@@ -28,10 +28,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -67,12 +70,18 @@ public class MainActivity extends AppCompatActivity {
                 Currency cur2 = money.get(to_position);
 
                 //solve
-                EditText input;
-                input = findViewById(R.id.input);
+                EditText input_text;
+                input_text = findViewById(R.id.input);
+                if (input_text.getText().toString().matches("")) {
+                    input_text.setText("0");
+                }
+                BigInteger input = new BigInteger(String.valueOf(input_text.getText()));
                 TextView output = findViewById(R.id.output);
-                double res = 0;
-                res = Double.parseDouble(String.valueOf(input.getText())) * (cur2.getPrice()/cur1.getPrice());
-                output.setText(String.valueOf(Math.round(res*100)*1.0/100)+" "+cur2.getCode());
+                BigDecimal res= new BigDecimal(String.valueOf(input.doubleValue() * (cur2.getPrice()/cur1.getPrice())));
+                System.out.print(res);
+                DecimalFormat df = new DecimalFormat("#.##");
+                output.setText(df.format(res));
+//                output.setText(String.valueOf(Math.round(res*100)*1.0/100)+" "+cur2.getCode());
             }
         });
     }
