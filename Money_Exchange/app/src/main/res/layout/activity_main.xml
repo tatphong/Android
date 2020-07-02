@@ -7,28 +7,30 @@
     tools:context=".MainActivity">
 
 
-    <Spinner
+    <com.toptoche.searchablespinnerlibrary.SearchableSpinner
         android:id="@+id/mfrom"
-        android:layout_width="170dp"
-        android:layout_height="35dp"
+        android:layout_width="175dp"
+        android:layout_height="40dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="100dp"
+        android:spinnerMode="dropdown"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Spinner
+    <com.toptoche.searchablespinnerlibrary.SearchableSpinner
         android:id="@+id/mto"
-        android:layout_width="170dp"
-        android:layout_height="35dp"
+        android:layout_width="175dp"
+        android:layout_height="40dp"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="10dp"
+        android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
+    <Button
+        android:id="@+id/hoandoi"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
         android:layout_marginTop="104dp"
         android:text="==>"
         app:layout_constraintEnd_toStartOf="@+id/mfrom"
@@ -42,6 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="224dp"
         android:text="Chuyển"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,8 +52,8 @@
 
     <TextView
         android:id="@+id/output"
-        android:layout_width="187dp"
-        android:layout_height="56dp"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
         android:text=""
         android:textAlignment="center"
         android:textSize="20dp"
@@ -58,7 +61,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/input"
-        app:layout_constraintVertical_bias="0.413" />
+        app:layout_constraintVertical_bias="0.414" />
 
     <EditText
         android:id="@+id/input"
@@ -66,9 +69,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:ems="10"
-        android:textAlignment="center"
-        android:inputType="numberDecimal"
         android:hint="Enter your number here"
+        android:inputType="numberDecimal"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

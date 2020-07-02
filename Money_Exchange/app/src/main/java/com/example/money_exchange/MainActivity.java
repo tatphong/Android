@@ -3,6 +3,9 @@ package com.example.money_exchange;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IInterface;
@@ -45,45 +48,69 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        money = new ArrayList<>();
-     //   ArrayAdapter ar = new  ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, test);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                FetchData fd = new FetchData();
-                fd.execute("https://usd.fxexchangerate.com/rss.xml","https://vnd.fxexchangerate.com/rss.xml");
-            }
-        });
-
-        //
-        Button exchange = findViewById(R.id.button);
-        exchange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Spinner mfrom = findViewById(R.id.mfrom);
-                Spinner mto = findViewById(R.id.mto);
-                Integer from_position = mfrom.getSelectedItemPosition();
-                Integer to_position = mto.getSelectedItemPosition();
-
-                //get currency
-                Currency cur1 = money.get(from_position);
-                Currency cur2 = money.get(to_position);
-
-                //solve
-                EditText input_text;
-                input_text = findViewById(R.id.input);
-                if (input_text.getText().toString().matches("")) {
-                    input_text.setText("0");
+        if(checkInternet()) {
+            money = new ArrayList<>();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    FetchData fd = new FetchData();
+                    fd.execute("https://usd.fxexchangerate.com/rss.xml", "https://vnd.fxexchangerate.com/rss.xml");
                 }
-                BigInteger input = new BigInteger(String.valueOf(input_text.getText()));
-                TextView output = findViewById(R.id.output);
-                BigDecimal res= new BigDecimal(String.valueOf(input.doubleValue() * (cur2.getPrice()/cur1.getPrice())));
-                System.out.print(res);
-                DecimalFormat df = new DecimalFormat("#.##");
-                output.setText(df.format(res));
+            });
+
+            //tinh toan
+            Button exchange = findViewById(R.id.button);
+            exchange.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (money.isEmpty() == false) {
+                        Spinner mfrom = findViewById(R.id.mfrom);
+                        Spinner mto = findViewById(R.id.mto);
+                        Integer from_position = mfrom.getSelectedItemPosition();
+                        Integer to_position = mto.getSelectedItemPosition();
+                        //   mfrom.setSelection(to_position);
+                        //get currency
+                        Currency cur1 = money.get(from_position);
+                        Currency cur2 = money.get(to_position);
+
+                        //solve
+                        EditText input_text;
+                        input_text = findViewById(R.id.input);
+                        if (input_text.getText().toString().matches("")) {
+                            input_text.setText("0");
+                        }
+                        BigInteger input = new BigInteger(String.valueOf(input_text.getText()));
+
+                        TextView output = findViewById(R.id.output);
+                        BigDecimal res = new BigDecimal(String.valueOf(input.doubleValue() * (cur2.getPrice() / cur1.getPrice())));
+                        System.out.print(res);
+                        DecimalFormat df = new DecimalFormat("#.##");
+                        output.setText(df.format(res) + " " + cur2.getCode());
 //                output.setText(String.valueOf(Math.round(res*100)*1.0/100)+" "+cur2.getCode());
-            }
-        });
+                    }
+                }
+            });
+
+            //hoan doi
+            Button hoandoi = findViewById(R.id.hoandoi);
+            hoandoi.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (money.isEmpty() == false) {
+                        Spinner mfrom = findViewById(R.id.mfrom);
+                        Spinner mto = findViewById(R.id.mto);
+                        Integer from_position = mfrom.getSelectedItemPosition();
+                        Integer to_position = mto.getSelectedItemPosition();
+                        mfrom.setSelection(to_position);
+                        mto.setSelection(from_position);
+                    }
+                }
+            });
+
+        }
+        else {
+            Toast.makeText(MainActivity.this, "no internet access",Toast.LENGTH_LONG).show();
+        }
     }
 
     class FetchData extends AsyncTask<String, Integer, String>
@@ -123,23 +150,30 @@ public class MainActivity extends AppCompatActivity {
         }
         public void xuli(String s)
         {
-            XMLDOMParser pa = new XMLDOMParser();
-            Document doc = pa.getDocument(s);
-            NodeList nodelist = doc.getElementsByTagName("item");
-            for(int i=0;i<nodelist.getLength();i++)
+            if(s.isEmpty())
             {
-                String name, code;
-                double price;
-                Element ele = (Element) nodelist.item(i);
-                String title = pa.getValue(ele,"title");
-                String des = pa.getValue(ele,"description");
-                name = title.substring(title.indexOf("/")+1);
-                code = name.substring(name.indexOf("(")+1,name.lastIndexOf(")"));
-                String tmp = des.substring(des.indexOf("=")+2);
-                String tmp2 = tmp.substring(0,tmp.indexOf(" "));
-                price = Double.parseDouble(tmp2);
-                money.add(new Currency(name,code,price));
-                //Toast.makeText(MainActivity.this, name + code + price,Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "unable to get data, please check your internet connection",Toast.LENGTH_LONG).show();
+            }
+            else {
+                XMLDOMParser pa = new XMLDOMParser();
+                Document doc = pa.getDocument(s);
+                NodeList nodelist = doc.getElementsByTagName("item");
+                for (int i = 0; i < nodelist.getLength(); i++) {
+                    String name, code;
+                    double price;
+                    Element ele = (Element) nodelist.item(i);
+                    String title = pa.getValue(ele, "title");
+                    String des = pa.getValue(ele, "description");
+                    name = title.substring(title.indexOf("/") + 1);
+                    code = name.substring(name.lastIndexOf("(") + 1, name.lastIndexOf(")"));
+                    name = name.substring(0, name.indexOf("("));
+                    name = name + " " + "-" + " " + code;
+                    String tmp = des.substring(des.indexOf("=") + 2);
+                    String tmp2 = tmp.substring(0, tmp.indexOf(" "));
+                    price = Double.parseDouble(tmp2);
+                    money.add(new Currency(name, code, price));
+                    //Toast.makeText(MainActivity.this, name + code + price,Toast.LENGTH_SHORT).show();
+                }
             }
 
 
@@ -154,6 +188,22 @@ public class MainActivity extends AppCompatActivity {
         Cadapter ca1 = new Cadapter(MainActivity.this,money);
         spinner1.setAdapter(ca1);
         spinner2.setAdapter(ca1);
+    }
+
+    private boolean checkInternet()
+    {
+        ConnectivityManager connManager =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
+
+        if (networkInfo == null)
+            return false;
+        if (!networkInfo.isConnected())
+            return false;
+        if (!networkInfo.isAvailable())
+            return false;
+
+        return true;
     }
 
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,16 +12,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class Cadapter extends BaseAdapter {
+public class Cadapter extends ArrayAdapter<Currency> {
 
     private Context con;
     private int layout;
     private ArrayList<Currency> nlist;
 
-    @Override
-    public Object getItem(int position) {
-        return null;
-    }
 
     @Override
     public long getItemId(int position) {
@@ -33,7 +30,7 @@ public class Cadapter extends BaseAdapter {
     }
 
     public Cadapter(Context con, ArrayList<Currency> nlistt) {
-        this.layout = R.layout.item;
+        super(con, R.layout.item, nlistt);
         this.con = con;
         this.nlist = nlistt;
 
@@ -58,8 +55,10 @@ public class Cadapter extends BaseAdapter {
         }
 
         final Currency c1 = nlist.get(position);
-        vh.text.setText(c1.getName());
+        vh.text.setText(c1.toString());
+
         return convertView;
     }
+
 
 }

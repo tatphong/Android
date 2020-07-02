@@ -1,6 +1,8 @@
 package com.example.money_exchange;
 
-public class Currency {
+import java.io.Serializable;
+
+public class Currency implements Serializable {
     private String name;
     private String code;
     private double price;
@@ -21,5 +23,9 @@ public class Currency {
 
     public double getPrice() {
         return price;
+    }
+    @Override
+    public String toString() {
+        return name;
     }
 }

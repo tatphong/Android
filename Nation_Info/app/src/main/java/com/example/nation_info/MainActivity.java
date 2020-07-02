@@ -2,11 +2,19 @@ package com.example.nation_info;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,10 +35,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        nation = new ArrayList<>();
-        FetchData fetchData = new FetchData();
-        fetchData.execute();
-        updatelist(nation);
+        if(checkInternet()) {
+            nation = new ArrayList<>();
+            FetchData fetchData = new FetchData();
+            fetchData.execute();
+            updatelist(nation);
+        }
+        else {
+            Toast.makeText(MainActivity.this, "no internet access",Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -72,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             updatelist(nation);
+            search();
         }
 
     }
@@ -81,6 +95,48 @@ public class MainActivity extends AppCompatActivity {
         nlistView = findViewById(R.id.listview);
         na = new Nadapter(MainActivity.this , nation1);
         nlistView.setAdapter(na);
+    }
+    private boolean checkInternet()
+    {
+        ConnectivityManager connManager =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
+
+        if (networkInfo == null)
+            return false;
+        if (!networkInfo.isConnected())
+            return false;
+        if (!networkInfo.isAvailable())
+            return false;
+
+        return true;
+    }
+    public void search()
+    {
+        EditText s = findViewById(R.id.search);
+        s.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                ArrayList<Nation> tmp = new ArrayList<>();;
+                for(int i=0;i<nation.size();i++)
+                {
+                    if(nation.get(i).getName().indexOf(s.toString())!= -1)
+                        tmp.add(nation.get(i));
+                }
+                updatelist(tmp);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+        });
     }
 
 }
