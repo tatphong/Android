@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -107,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
 //                System.out.print("end");
                 SmsManager smsManager = SmsManager.getDefault();
                 smsManager.sendTextMessage("0375327691", null, msg, null, null);
+                Toast.makeText(MainActivity.this, "Your order is sent.",
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
