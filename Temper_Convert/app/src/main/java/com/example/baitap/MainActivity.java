@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
                 RadioButton RD = findViewById(tem);
                 String type = RD.getText().toString();
 
-                Toast.makeText(MainActivity.this, type, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, type, Toast.LENGTH_SHORT).show();
                 //his.setText(RD.getText().toString());
 
 
