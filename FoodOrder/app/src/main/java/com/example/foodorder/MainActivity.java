@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 //                System.out.print(msg);
 //                System.out.print("end");
                 SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage("0375327691", null, msg, null, null);
+                smsManager.sendTextMessage("5555", null, msg, null, null);
                 Toast.makeText(MainActivity.this, "Your order is sent.",
                         Toast.LENGTH_LONG).show();
             }
